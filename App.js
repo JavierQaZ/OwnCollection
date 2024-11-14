@@ -1,7 +1,7 @@
 // App.js
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TouchableOpacity, View, Modal } from 'react-native';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import { Menu, PaperProvider } from 'react-native-paper';
 
 // Screens
@@ -17,12 +17,9 @@ const Stack = createStackNavigator();
 
 function App() {
   const [menuVisible, setMenuVisible] = useState(false);
-  const [optionsModalVisible, setOptionsModalVisible] = useState(false);
 
   const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
-
-  //const toggleOptionsModal = () => setOptionsModalVisible(!optionsModalVisible);
 
   return (
     <PaperProvider>
@@ -41,16 +38,6 @@ function App() {
             options={{
               headerRight: () => (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  {optionsModalVisible ? (
-                    <>
-                      <TouchableOpacity onPress={() => { console.log('Editar'); toggleOptionsModal(); }} style={{ marginRight: 16 }}>
-                        <AntDesign name="edit" size={24} color="white" />
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => { console.log('Eliminar'); toggleOptionsModal(); }} style={{ marginRight: 16 }}>
-                        <Ionicons name="trash" size={24} color="white" />
-                      </TouchableOpacity>
-                    </>
-                  ) : (
                     <Menu
                       visible={menuVisible}
                       onDismiss={closeMenu}
@@ -67,15 +54,12 @@ function App() {
                       <Menu.Item onPress={() => { console.log("Opción 1"); closeMenu(); }} title="Recientes" />
                       <Menu.Item onPress={() => { console.log("Opción 2"); closeMenu(); }} title="A - Z" />
                     </Menu>
-                  )}
+                  
                 </View>
               ),
             }}
-            //initialParams={{ onLongPressCard: toggleOptionsModal }}
           />
           <Stack.Screen name='Collection Name' component={CardScreen}/>
-          {/*<Stack.Screen name='Yes Card Name' component={YesCardScreen}/>}
-          /*<Stack.Screen name='No Card Name' component={NoCardScreen}/>*/}
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
