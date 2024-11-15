@@ -12,6 +12,7 @@ import CardScreen from './screens/CardScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState } from 'react';
+import SelectedCardScreen from './screens/SelectedCardScreen';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,7 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerStyle: { backgroundColor: '#573333' },
+            headerStyle: { backgroundColor: '#4D0B0A' },
             headerTintColor: '#ffffff',
             contentStyle: { backgroundColor: '#614c4c' },
           }}
@@ -54,12 +55,12 @@ function App() {
                       <Menu.Item onPress={() => { console.log("Opción 1"); closeMenu(); }} title="Recientes" />
                       <Menu.Item onPress={() => { console.log("Opción 2"); closeMenu(); }} title="A - Z" />
                     </Menu>
-                  
                 </View>
               ),
             }}
           />
           <Stack.Screen name='Collection Name' component={CardScreen}/>
+          <Stack.Screen name='Card Name' component={SelectedCardScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

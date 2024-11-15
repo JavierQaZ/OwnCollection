@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Modal} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useNavigation } from "@react-navigation/native";
 // Components
 import AddCard from '../components/AddCard';
 
@@ -13,11 +13,17 @@ const CardScreen = () => {
     const openModal = () => setModalVisible(true);
     const closeModal = () => setModalVisible(false);
 
+
+    const navigation = useNavigation();
+    const handlePress = () => {
+        navigation.navigate('Card Name')
+    }
     return (
         <>
             <View style={styles.container}>
                 <TouchableOpacity
                     style={styles.card}
+                    onPress={handlePress}
                 >
                     <ImageBackground
                         source={{ uri: 'https://pbs.twimg.com/media/GbnKWvxbUAARDVS?format=jpg&name=large' }} // Reemplaza con la URL de la imagen
