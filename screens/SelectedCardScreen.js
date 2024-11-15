@@ -34,11 +34,6 @@ const styles = StyleSheet.create({
       height:'100%',
       justifyContent: 'flex-end'
   },
-  blackOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000000',
-    zIndex: 1
-  },
   starButton: {
       position: 'absolute',
       bottom: 20,
@@ -49,7 +44,7 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       justifyContent: 'center',
       alignItems: 'center',
-      zIndex:2
+      zIndex:1
   }
 });
 
