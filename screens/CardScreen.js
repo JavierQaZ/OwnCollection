@@ -16,7 +16,7 @@ const CardScreen = () => {
     return (
         <>
             <View style={styles.container}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.card}
                 >
                     <ImageBackground
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#8B0000',
+        backgroundColor: '#4D0B0A',
         width: 50,
         height: 50,
         borderRadius: 25,

@@ -24,7 +24,7 @@ const CollectionScreen = () => {
     return (
         <>
             <View style={styles.container}>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.card}
                     onPress={handlePress}
                 >
@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     cardText: {
-    //backgroundColor: 'rgba(0, 0, 0, 0.6)',
         color:'white',
         margin: 8,
         fontSize: 16,
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#8B0000',
+        backgroundColor: '#4D0B0A',
         width: 50,
         height: 50,
         borderRadius: 25,
