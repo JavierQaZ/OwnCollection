@@ -17,17 +17,37 @@ Desarrollar una aplicación móvil multiplataforma que permita a los usuarios ca
 
 ### Objetivos Específicos
 
-o	Implementar la capacidad de capturar imágenes de cartas utilizando la cámara del dispositivo o seleccionarlas desde la galería.
+- Implementar la capacidad de capturar imágenes de cartas utilizando la cámara del dispositivo o seleccionarlas desde la galería.
 
-o	Crear una interfaz amigable que permita a los usuarios añadir, editar y visualizar los detalles de cada carta en su colección, como identificador (id), nombre, descripción, adquisición, rareza e imágenes.
+- Crear una interfaz amigable que permita a los usuarios añadir, editar y visualizar los detalles de cada carta en su colección, como su nombre, estado de adquisición e imagen.
 
-o	Desarrollar un sistema de almacenamiento local para guardar y recuperar los datos de las cartas, asegurando que la colección esté disponible aun sin conexión a internet.
+- Desarrollar un sistema de almacenamiento local para guardar y recuperar los datos de las cartas, asegurando que la colección esté disponible aun sin conexión a internet.
 
-o	Diseñar un sistema que permita a los usuarios visualizar sus cartas en cuadrículas y que ofrezca opciones para filtrar y clasificar las cartas según sus características.
+- Diseñar un sistema que permita a los usuarios visualizar sus cartas en cuadrículas y que ofrezca opciones para filtrar y clasificar las cartas según sus características.
 
 ## Wireframes
 
 Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas.
 
-##### Enlace:
-https://www.figma.com/design/pGZLbCkmuvSJ1WMA92LEhp/OwnCollection?node-id=2-4&t=es7NkLvux0x9hWQ3-1
+> https://www.figma.com/design/pGZLbCkmuvSJ1WMA92LEhp/OwnCollection?node-id=2-4&t=es7NkLvux0x9hWQ3-1
+
+## Notas
+
+Este proyecto está desarrollado en base a SDK 51.
+
+A la fecha 18/Nov, está integrado:
+
+- expo-sqlite
+- expo-image-picker
+
+En este estado, la aplicación puede:
+
+- Crear Colecciones
+    - Ingreso de Título de la Colección
+    - Ingreso de Portada de la Colección (por Cámara o Almacenamiento)
+
+- Agregar Cartas a las Colecciones
+    - Ingreso de Nombre de la Carta
+    - Ingreso de Imagen de la Carta (por Cámara o Almacenamiento)
+
+- Visualización de la Carta
