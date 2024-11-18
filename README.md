@@ -5,7 +5,7 @@ Proyecto para Taller de Aplicaciones Móviles - 2024
 
 El presente proyecto tiene como objetivo desarrollar una aplicación móvil en React Native que permita a los usuarios gestionar una colección personalizada de cartas. La aplicación ofrecerá funcionalidades clave como agregar, editar y eliminar cartas, todo a través de una interfaz amigable que permitirá la interacción con la cámara del dispositivo o la galería para añadir nuevas cartas.
 
-La aplicación estará dirigida a coleccionistas, tanto aficionados como entusiastas, que deseen llevar un control digital y visual de sus cartas de una manera organizada y accesible. Estos usuarios podrán capturar imágenes de sus cartas, asignarles nombres e ID, y posteriormente gestionarlas directamente desde la aplicación.
+La aplicación estará dirigida a coleccionistas, tanto aficionados como entusiastas, que deseen llevar un control digital y visual de sus cartas de una manera organizada y accesible. Estos usuarios podrán capturar imágenes de sus cartas, asignarles nombres y posteriormente gestionarlas directamente desde la aplicación.
 
 En términos técnicos, el desarrollo de la aplicación se realizará utilizando React Native como framework principal, lo que permitirá la compatibilidad con dispositivos Android e iOS, siendo multiplataforma. Para gestionar el almacenamiento local, se utilizará SQLite.
 
@@ -27,7 +27,7 @@ Desarrollar una aplicación móvil multiplataforma que permita a los usuarios ca
 
 ## Wireframes
 
-Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas. El estado actual representa las 6 vistas inferiores.
+Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas. El estado actual representa las 6 vistas inferiores _(destacadas en un recuadro azul)_
 
 > https://www.figma.com/design/pGZLbCkmuvSJ1WMA92LEhp/OwnCollection?node-id=2-4&t=es7NkLvux0x9hWQ3-1
 
