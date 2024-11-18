@@ -27,7 +27,7 @@ Desarrollar una aplicación móvil multiplataforma que permita a los usuarios ca
 
 ## Wireframes
 
-Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas.
+Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas. El estado actual representa las 6 vistas inferiores.
 
 > https://www.figma.com/design/pGZLbCkmuvSJ1WMA92LEhp/OwnCollection?node-id=2-4&t=es7NkLvux0x9hWQ3-1
 
@@ -50,4 +50,4 @@ En este estado, la aplicación puede:
     - Ingreso de Nombre de la Carta
     - Ingreso de Imagen de la Carta (por Cámara o Almacenamiento)
 
-- Visualización de la Carta
+- Ver la Carta
