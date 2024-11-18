@@ -6,16 +6,11 @@ import * as SQLite from 'expo-sqlite'
 function SelectedCardScreen({ route }){
 
     const db = SQLite.openDatabaseAsync('OwnDB')
-
     const { cardID, cardName, cardImage, cardState } = route.params;
-
     const [star, setStar] = useState(cardState)
 
-
-    const handleStar = async (cardID) => {
-        const newState = star === 0 ? 1 : 0;
-        const result = await db.runAsync(`UPDATE cards SET state = ? WHERE id = ?`, newState, cardID)
-    }
+    const handleStar = () =>
+        setStar(!star)
 
     return(
         <View style={styles.container}>
@@ -25,7 +20,7 @@ function SelectedCardScreen({ route }){
             </ImageBackground>
 
             <TouchableOpacity style={styles.starButton} onPress={handleStar}>
-                {star === 1 ? (
+                {star ? (
                     <Ionicons name="star" size={24} color="white"/>
                 ) : (
                 <Ionicons name="star-outline" size={24} color="white"/>)}
