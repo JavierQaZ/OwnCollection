@@ -50,4 +50,5 @@ En este estado, la aplicación puede:
     - Ingreso de Nombre de la Carta
     - Ingreso de Imagen de la Carta (por Cámara o Almacenamiento)
 
-- Ver la Carta
+- Mostrar la carta
+    - Muestra la carta en una pantalla individual
