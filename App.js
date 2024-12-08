@@ -48,7 +48,9 @@ export default function App() {
           <Stack.Screen
             name="OwnCollection"
             component={CollectionScreen}
-            options={{ title: 'OwnCollection' }}
+            options={{
+              title: 'OwnCollection',
+              headerRight: () => null}}
           />
           <Stack.Screen
             name="Collection Name"

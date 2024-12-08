@@ -12,13 +12,36 @@ export default function CollectionScreen({ navigation }) {
     const [collectionName, setCollectionName] = useState('')
     const [collectionImageUri, setCollectionImageUri] = useState('')
 
+    const [editedCollectionName, setEditedCollectionName] = useState('')
+    const [editedCollectionImageUri, setEditedCollectionImageUri] = useState('')
+
     const [refresh, setRefresh] = useState(false)
 
-    //Modal
+    //Estado Banner
+    const [longPressed, setLongPressed] = useState(false)
+    const [pickedCollection, setPickedCollection] = useState(null)
+
+    //Modal Agregar
     const [modalVisible, setModalVisible] = useState(false)
     const openModal = () => setModalVisible(true);
     const closeModal = () => setModalVisible(false);
 
+    //Modal Editar
+    const [editModalVisible, setEditModalVisible] = useState(false)
+    const openEditModal = () =>{
+        const selectedCollection = collections.find(c => c.id === pickedCollection)
+        if (selectedCollection){
+            setEditedCollectionName(selectedCollection.name)
+            setEditedCollectionImageUri(selectedCollection.coverImage)
+        }
+        setEditModalVisible(true);
+    }
+    const closeEditModal = () => setEditModalVisible(false);
+
+    //Modal Borrar
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+    const openDeleteModal = () => setDeleteModalVisible(true)
+    const closeDeleteModal = () => setDeleteModalVisible(false)
 
     const getCollections = async () => {
         const db = await SQLite.openDatabaseAsync('OwnDB')
@@ -31,6 +54,33 @@ export default function CollectionScreen({ navigation }) {
         const result = await db.runAsync(`INSERT INTO collections (name, coverImage) VALUES (?, ?)`, collectionName, collectionImageUri)
         closeModal()
         setRefresh(!refresh)
+        setCollectionName('')
+        setCollectionImageUri('')
+    }
+
+    const editCollection = async () => {
+        if(!pickedCollection) return;
+        const db = await SQLite.openDatabaseAsync('OwnDB');
+        const result = await db.runAsync(`UPDATE collections SET name = ?, coverImage = ? WHERE id = ?`, editedCollectionName, editedCollectionImageUri, pickedCollection);
+
+        setLongPressed(false)
+        getCollections()
+        closeEditModal()
+        setPickedCollection(null)
+        setEditedCollectionName('')
+        setEditedCollectionImageUri('')
+    }
+
+    const deleteCollection = async () => {
+        if (!pickedCollection) return;
+        const db = await SQLite.openDatabaseAsync('OwnDB');
+        await db.runAsync(`DELETE FROM cards WHERE collectionId = ?`, pickedCollection)
+        await db.runAsync(`DELETE FROM collections WHERE id = ?`, pickedCollection)
+
+        setLongPressed(false)
+        getCollections()
+        closeDeleteModal()
+        setPickedCollection(null)
     }
 
     useEffect(() => {
@@ -38,8 +88,6 @@ export default function CollectionScreen({ navigation }) {
     }, [refresh])
 
     //ImagePicker
-    const [imageUri, setImageUri] = useState(null);
-
     const selectImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
@@ -54,10 +102,6 @@ export default function CollectionScreen({ navigation }) {
             aspect: [9,16],
         });
         setCollectionImageUri(pickerResult.assets[0].uri)
-
-        if (!pickerResult.canceled) {
-            setImageUri(pickerResult.uri);
-        }
     };
 
     const takePhoto = async () => {
@@ -74,10 +118,70 @@ export default function CollectionScreen({ navigation }) {
             quality: 1,
         });
         setCollectionImageUri(pickerResult.assets[0].uri)
-        if (!pickerResult.canceled) {
-            setImageUri(pickerResult.uri);
-        }
     };
+
+    //ImagePicker - Edit
+    const selectEditedImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert('Se requiere permiso para acceder a la galería.');
+            return;
+        }
+
+        const pickerResult = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+            aspect: [9,16],
+        });
+        setEditedCollectionImageUri(pickerResult.assets[0].uri)
+    };
+
+    const takeEditedPhoto = async () => {
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert('Se requiere permiso para acceder a la cámara.');
+            return;
+        }
+
+        const pickerResult = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [9,16],
+            quality: 1,
+        });
+        setEditedCollectionImageUri(pickerResult.assets[0].uri)
+    };
+
+    const handleOnLongPress = (collectionId) => {
+        setLongPressed(true)
+        setPickedCollection(collectionId)
+
+        //Botones
+        navigation.setOptions({
+            headerRight: () => (
+                <View style={{ flexDirection: 'row', marginRight: 10}}>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={openEditModal}>
+                        <MaterialIcons name="edit" size={24} color="white"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={openDeleteModal}>
+                        <MaterialIcons name="delete-outline" size={24} color="white"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={() => setLongPressed(false)}>
+                        <MaterialIcons name="cancel" size={24} color="white"/>
+                    </TouchableOpacity>
+                </View>
+            )
+        })
+    }
+
+    useEffect(() => {
+        if (!longPressed){
+            navigation.setOptions({
+                headerRight: () => null
+            })
+        }
+    }, [longPressed])
 
     return (
         <View style={styles.container}>
@@ -88,6 +192,7 @@ export default function CollectionScreen({ navigation }) {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={styles.card}
+                        onLongPress={() => handleOnLongPress(item.id)}
                         onPress={() => navigation.navigate('Collection Name', { collectionId: item.id, collectionName: item.name })}
                     >
                         <ImageBackground
@@ -103,6 +208,7 @@ export default function CollectionScreen({ navigation }) {
                 <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
 
+            {/*MODAL AGREGAR */}
             <Modal
                 visible={modalVisible}
                 animationType='none'
@@ -135,6 +241,67 @@ export default function CollectionScreen({ navigation }) {
                             <TouchableOpacity style={styles.acceptButton} onPress={insertCollection}>
                                 <AntDesign name='checkcircleo' size={18} color='#fff'/>
                                 <Text style={styles.buttonAText}>Añadir</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            {/*MODAL EDITAR */}
+            <Modal
+                visible={editModalVisible}
+                animationType='none'
+                transparent={true}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Editar Colección</Text>
+                        <Text style={styles.label}>Título de la Colección</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={editedCollectionName}
+                            onChangeText={setEditedCollectionName}/>
+                        <Text style={styles.label}>Imagen de la Colección</Text>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.cameraButton} onPress={takeEditedPhoto}>
+                                <Ionicons name="camera" size={20} color="gray" />
+                                <Text style={styles.buttonCText}>  Tomar Foto</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.galleryButton} onPress={selectEditedImage}>
+                                <Ionicons name="image" size={20} color="gray" />
+                                <Text style={styles.buttonCText}>  Subir Foto</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={closeEditModal}>
+                                <MaterialIcons name='cancel' size={20} color='#000'/>
+                                <Text style={styles.buttonCText}>Cancelar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.acceptButton} onPress={editCollection}>
+                                <AntDesign name='checkcircleo' size={18} color='#fff'/>
+                                <Text style={styles.buttonAText}>Editar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            {/*MODAL BORRAR */}
+            <Modal
+                visible={deleteModalVisible}
+                animationType='none'
+                transparent={true}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Borrar Colección</Text>
+                        <Text style={styles.label}>¿Está seguro de querer borrar esta colección?</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={closeDeleteModal}>
+                                <MaterialIcons name='cancel' size={20} color='#000'/>
+                                <Text style={styles.buttonCText}>Cancelar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.acceptButton} onPress={deleteCollection}>
+                                <AntDesign name='checkcircleo' size={18} color='#fff'/>
+                                <Text style={styles.buttonAText}>Borrar</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
