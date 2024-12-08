@@ -15,12 +15,36 @@ export default function CardScreen({ route, navigation }) {
     const [cardImageUri, setCardImageUri] = useState('')
     const [cardState, setCardState] = useState(false)
 
+    const [editedCardName, setEditedCardName] = useState('')
+    const [editedCardImageUri, setEditedCardImageUri] = useState('')
+
     const [refresh, setRefresh] = useState(false)
 
-    //Modal
+    //Estado Banner
+    const [longPressed, setLongPressed] = useState(false)
+    const [pickedCard, setPickedCard] = useState(null)
+
+    //Modal Agregar
     const [modalVisible, setModalVisible] = useState(false)
     const openModal = () => setModalVisible(true);
     const closeModal = () => setModalVisible(false);
+
+    //Modal Editar
+    const [editModalVisible, setEditModalVisible] = useState(false)
+    const openEditModal = () => {
+        const SelectedCard = cards.find(c => c.id === pickedCard)
+        if (SelectedCard){
+            setEditedCardName(SelectedCard.name)
+            setEditedCardImageUri(SelectedCard.image)
+        }
+        setEditModalVisible(true)
+    }
+    const closeEditModal = () => setEditModalVisible(false);
+
+    //Modal Borrar
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+    const openDeleteModal = () => setDeleteModalVisible(true)
+    const closeDeleteModal = () => setDeleteModalVisible(false)
 
     const getCards = async () => {
         const db = await SQLite.openDatabaseAsync('OwnDB')
@@ -33,6 +57,30 @@ export default function CardScreen({ route, navigation }) {
         const result= await db.runAsync(`INSERT INTO cards (collectionId, name, image, state) VALUES (?, ?, ?, ?)`, collectionId, cardName, cardImageUri, cardState ? 1 : 0)
         closeModal()
         setRefresh(!refresh)
+        setCardName('')
+        setCardImageUri('')
+    }
+
+    const editCard = async () => {
+        if(!pickedCard) return;
+        const db = await SQLite.openDatabaseAsync('OwnDB')
+        const result = await db.runAsync(`UPDATE cards SET name = ?, image = ? WHERE id = ? AND collectionId = ?`, editedCardName, editedCardImageUri, pickedCard, collectionId);
+
+        setLongPressed(false)
+        getCards()
+        closeEditModal()
+        setPickedCard(null)
+    }
+
+    const deleteCard = async () => {
+        if(!pickedCard) return;
+        const db = await SQLite.openDatabaseAsync('OwnDB')
+        await db.runAsync(`DELETE FROM cards WHERE id = ?`, pickedCard)
+
+        setLongPressed(false)
+        getCards()
+        closeDeleteModal()
+        setPickedCard(null)
     }
 
     useEffect(() => {
@@ -81,6 +129,69 @@ export default function CardScreen({ route, navigation }) {
         }
     };
 
+    //ImagePicker - Edit
+    const selectEditedImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert('Se requiere permiso para acceder a la galería.');
+            return;
+        }
+
+        const pickerResult = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+            aspect: [9,16],
+        });
+        setEditedCardImageUri(pickerResult.assets[0].uri)
+    };
+
+    const takeEditedPhoto = async () => {
+        const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert('Se requiere permiso para acceder a la cámara.');
+            return;
+        }
+
+        const pickerResult = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [9,16],
+            quality: 1,
+        });
+        setEditedCardImageUri(pickerResult.assets[0].uri)
+    };
+
+    const handleOnLongPress = (cardId) => {
+        setLongPressed(true)
+        setPickedCard(cardId)
+
+        //Botones
+        navigation.setOptions({
+            headerRight: () => (
+                <View style={{ flexDirection: 'row', marginRight: 10}}>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={openEditModal}>
+                        <MaterialIcons name="edit" size={24} color="white"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={openDeleteModal}>
+                        <MaterialIcons name="delete-outline" size={24} color="white"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ paddingHorizontal: 12}} onPress={() => setLongPressed(false)}>
+                        <MaterialIcons name="cancel" size={24} color="white"/>
+                    </TouchableOpacity>
+                </View>
+            )
+        })
+    }
+
+    useEffect(() => {
+        if (!longPressed){
+            navigation.setOptions({
+                headerRight: () => null
+            })
+        }
+    }, [longPressed])
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -90,6 +201,7 @@ export default function CardScreen({ route, navigation }) {
                 renderItem={({ item }) => (
                     <TouchableOpacity
                         style={styles.card}
+                        onLongPress={() => handleOnLongPress(item.id)}
                         onPress={() => navigation.navigate('Card Name', {cardID: item.id, cardName: item.name, cardImage: item.image, cardState: item.state})}
                         >
                     <ImageBackground
@@ -106,6 +218,7 @@ export default function CardScreen({ route, navigation }) {
                 <Ionicons name="add" size={24} color="white" />
             </TouchableOpacity>
 
+            {/* MODAL AGREGAR */}
             <Modal
                 visible={modalVisible}
                 animationType='none'
@@ -141,6 +254,68 @@ export default function CardScreen({ route, navigation }) {
                             <TouchableOpacity style={styles.acceptButton} onPress={insertCard}>
                                 <AntDesign name='checkcircleo' size={18} color='#fff'/>
                                 <Text style={styles.buttonAText}>Añadir</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+
+            {/* MODAL EDITAR */}
+            <Modal
+                visible={editModalVisible}
+                animationType='none'
+                transparent={true}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Editar Carta</Text>
+                        <Text style={styles.label}>Título de la Carta</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={editedCardName}
+                            onChangeText={setEditedCardName}/>
+                        <Text style={styles.label}>Imagen de la Carta</Text>
+                        <View style={styles.buttonRow}>
+                            <TouchableOpacity style={styles.cameraButton} onPress={takeEditedPhoto}>
+                                <Ionicons name="camera" size={20} color="gray" />
+                                <Text style={styles.buttonCText}>  Tomar Foto</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.galleryButton} onPress={selectEditedImage}>
+                                <Ionicons name="image" size={20} color="gray" />
+                                <Text style={styles.buttonCText}>  Subir Foto</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={closeEditModal}>
+                                <MaterialIcons name='cancel' size={20} color='#000'/>
+                                <Text style={styles.buttonCText}>Cancelar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.acceptButton} onPress={editCard}>
+                                <AntDesign name='checkcircleo' size={18} color='#fff'/>
+                                <Text style={styles.buttonAText}>Editar</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            {/* MODAL BORRAR */}
+            <Modal
+                visible={deleteModalVisible}
+                animationType='none'
+                transparent={true}>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Borrar Carta</Text>
+                        <Text style={styles.label}>¿Está seguro de querer borrar esta carta?</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.cancelButton} onPress={closeDeleteModal}>
+                                <MaterialIcons name='cancel' size={20} color='#000'/>
+                                <Text style={styles.buttonCText}>Cancelar</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.acceptButton} onPress={deleteCard}>
+                                <AntDesign name='checkcircleo' size={18} color='#fff'/>
+                                <Text style={styles.buttonAText}>Borrar</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

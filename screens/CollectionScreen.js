@@ -28,7 +28,7 @@ export default function CollectionScreen({ navigation }) {
 
     //Modal Editar
     const [editModalVisible, setEditModalVisible] = useState(false)
-    const openEditModal = () =>{
+    const openEditModal = () => {
         const selectedCollection = collections.find(c => c.id === pickedCollection)
         if (selectedCollection){
             setEditedCollectionName(selectedCollection.name)
