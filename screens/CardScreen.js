@@ -202,7 +202,7 @@ export default function CardScreen({ route, navigation }) {
                     <TouchableOpacity
                         style={styles.card}
                         onLongPress={() => handleOnLongPress(item.id)}
-                        onPress={() => navigation.navigate('Card Name', {cardID: item.id, cardName: item.name, cardImage: item.image, cardState: item.state})}
+                        onPress={() => navigation.navigate('Card Name', {cardID: item.id, cardName: item.name, cardImage: item.image, cardState: item.state, collectionId: item.collectionId})}
                         >
                     <ImageBackground
                         source={{ uri: item.image}}
