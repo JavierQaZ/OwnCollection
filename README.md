@@ -52,13 +52,13 @@ En este estado, la aplicación puede:
 
 - Mostrar la carta
     - Muestra la carta en una pantalla individual
-**    - Muestra y guarda su estado de adquisición.
+    **- Muestra y guarda su estado de adquisición.**
 
- - Edita Colecciones
-    - Edita el título de la colección y la imagen de portada
+ **- Edita Colecciones**
+    **- Edita el título de la colección y la imagen de portada**
 
- - Edita Cartas
-    - Edita el título de la carta y su imagen
+ **- Edita Cartas**
+    **- Edita el título de la carta y su imagen**
     
- - Elimina Colecciones
- - Elimina Cartas**
+ **- Elimina Colecciones**
+ **- Elimina Cartas**
