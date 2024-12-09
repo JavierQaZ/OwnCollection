@@ -33,10 +33,7 @@ Para diseñar este proyecto se utilizó Figma, con un total de 14 vistas. El est
 
 ## Notas
 
-Este proyecto está desarrollado en base a SDK 51.
-
-A la fecha 18/Nov, está integrado:
-
+Este proyecto está desarrollado en base a SDK 51, y tiene integrado:
 - expo-sqlite
 - expo-image-picker
 
@@ -52,13 +49,13 @@ En este estado, la aplicación puede:
 
 - Mostrar la carta
     - Muestra la carta en una pantalla individual
-    **- Muestra y guarda su estado de adquisición.**
+    - **Muestra y guarda su estado de adquisición.**
 
- **- Edita Colecciones**
-    **- Edita el título de la colección y la imagen de portada**
+ - **Edita Colecciones**
+    - **Edita el título de la colección y la imagen de portada**
 
- **- Edita Cartas**
-    **- Edita el título de la carta y su imagen**
-    
- **- Elimina Colecciones**
- **- Elimina Cartas**
+ - **Edita Cartas**
+    - **Edita el título de la carta y su imagen**
+
+ - **Elimina Colecciones**
+ - **Elimina Cartas**
