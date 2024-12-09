@@ -26,9 +26,8 @@ function SelectedCardScreen({ route }){
     }
 
     useEffect(() => {
-      getCard()
+        getCard()
     }, [cardID, collectionId])
-    
 
     return(
         <View style={styles.container}>
